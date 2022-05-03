@@ -1,9 +1,11 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3001;
 
 const connection = mysql.createConnection({
     host: 'localhost',
-    port: process.env.PORT,
     user: process.env.USERNAME_SQL,
     password: process.env.PASSWORD_SQL,
     database: 'fma_statemilitary_db'
@@ -14,10 +16,10 @@ showRoles = () => {
   console.log('Showing all roles...\n');
 
   const sql = `SELECT role.id, role.title, department.name AS department
-               FROM role
-               INNER JOIN department ON role.department_id = department.id`;
+               FROM roles
+               INNER JOIN departments ON role.department_id = department.id`;
   
-  connection.promise().query(sql, (err, rows) => {
+  connection.query(sql, (err, rows) => {
     if (err) throw err; 
     console.table(rows); 
     askSheska();
@@ -42,9 +44,9 @@ addRole = () => {
       const roleParams = [answer.role, answer.salary];
 
       // grab dept from department table
-      const roleSql = `SELECT name, id FROM department`; 
+      const roleSql = `SELECT name, id FROM departments`; 
 
-      connection.promise().query(roleSql, (err, data) => {
+      connection.query(roleSql, (err, data) => {
         if (err) throw err; 
     
         const deptChoices = data.map(({ name, id }) => ({ name: name, value: id }));
@@ -61,7 +63,7 @@ addRole = () => {
             const dept = deptChoice.dept;
             roleParams.push(dept);
 
-            const sql = `INSERT INTO role (title, salary, department_id)
+            const sql = `INSERT INTO roles (title, salary, department_id)
                         VALUES (?, ?, ?)`;
 
             connection.query(sql, roleParams, (err, result) => {
@@ -79,9 +81,9 @@ addRole = () => {
 
 // function to delete role
 deleteRole = () => {
-  const roleSql = `SELECT * FROM role`; 
+  const roleSql = `SELECT * FROM roles`; 
 
-  connection.promise().query(roleSql, (err, data) => {
+  connection.query(roleSql, (err, data) => {
     if (err) throw err; 
 
     const rolesChoices = data.map(({ title, id }) => ({ name: title, value: id }));
@@ -96,7 +98,7 @@ deleteRole = () => {
     ])
       .then(roleChoice => {
         const role = roleChoice.role;
-        const sql = `DELETE FROM role WHERE id = ?`;
+        const sql = `DELETE FROM roles WHERE id = ?`;
 
         connection.query(sql, role, (err, result) => {
           if (err) throw err;

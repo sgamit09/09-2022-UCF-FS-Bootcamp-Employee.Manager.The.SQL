@@ -1,35 +1,28 @@
-// const mysql = require('mysql2');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
-// const cTable = require('console.table');
 const roleSQL = require('./routes/roles');
 const deptSQL = require('./routes/departments');
 const employeeSQL = require('./routes/employees');
 const figlet = require('figlet');
+// const express = require('express/lib/application');
 require('dotenv').config()
 // console.log(process.env)
 
-// // connection to database
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: process.env.PASSWORD_SQL,
-//     database: 'fma_statemilitary_db'
-//   });
-
-init = () => {
-   console.log("\n"+"=".repeat(62)+"\n");
-    figlet.create('    Employee','Doom',(err, result) => {
-        if (err) throw err;
-        console.log(result);
-        figlet.create('      Manager','Doom',(err, result) => {
-            if (err) throw err;
-            console.log(result);
-            console.log("\n"+"=".repeat(62)+"\n");
-            askSheska();
-        });
+function init() {
+    console.log("\n" + "=".repeat(62) + "\n");
+    figlet('Employee Manager!', function (err, data) {
+        if (err) {
+            console.log('Something went wrong...');
+            console.dir(err);
+            return;
+        }
+        console.log(data);
+        askSheska();
     });
-    
 }
+
+//Let's start
+init();
 
 //Generate prompts  
 const askSheska = () => {

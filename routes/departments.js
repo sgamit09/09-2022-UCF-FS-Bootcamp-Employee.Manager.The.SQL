@@ -1,9 +1,11 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3001;
 
 const connection = mysql.createConnection({
     host: 'localhost',
-    port: process.env.PORT,
     user: process.env.USERNAME_SQL,
     password: process.env.PASSWORD_SQL,
     database: 'fma_statemilitary_db'
@@ -11,11 +13,9 @@ const connection = mysql.createConnection({
 
 showDepartments = () => {
     console.log('Showing all departments...\n');
-    const sql = `SELECT department.id AS id, 
-                 department.name AS department 
-                 FROM department`;
+    const sql = `SELECT id AS DEPT_ID, name AS DEPARTMENT FROM departments`;
 
-    connection.promise().query(sql, (err, rows) => {
+    connection.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
         askSheska();
@@ -32,7 +32,7 @@ addDepartment = () => {
         }
     ])
         .then(answer => {
-            const sql = `INSERT INTO department (name) VALUES (?)`;
+            const sql = `INSERT INTO departments (name) VALUES (?)`;
             connection.query(sql, answer.addDept, (err, result) => {
                 if (err) throw err;
                 console.log('Added ' + answer.addDept + " to departments!");
@@ -44,9 +44,9 @@ addDepartment = () => {
 
 // function to delete department
 deleteDepartment = () => {
-    const deptSql = `SELECT * FROM department`;
+    const deptSql = `SELECT * FROM departments`;
 
-    connection.promise().query(deptSql, (err, data) => {
+    connection.query(deptSql, (err, data) => {
         if (err) throw err;
 
         const deptChoices = data.map(({ name, id }) => ({ name: name, value: id }));
@@ -61,7 +61,7 @@ deleteDepartment = () => {
         ])
             .then(answer => {
                 const dept = answer.dept;
-                const sql = `DELETE FROM department WHERE id = ?`;
+                const sql = `DELETE FROM departments WHERE id = ?`;
 
                 connection.query(sql, dept, (err, result) => {
                     if (err) throw err;

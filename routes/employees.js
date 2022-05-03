@@ -1,9 +1,11 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3001;
 
 const connection = mysql.createConnection({
     host: 'localhost',
-    port: process.env.PORT,
     user: process.env.USERNAME_SQL,
     password: process.env.PASSWORD_SQL,
     database: 'fma_statemilitary_db'
@@ -19,12 +21,12 @@ showEmployees = () => {
                         department.name AS department,
                         role.salary, 
                         CONCAT (manager.first_name, " ", manager.last_name) AS manager
-                 FROM employee
+                 FROM employees
                         LEFT JOIN role ON employee.role_id = role.id
                         LEFT JOIN department ON role.department_id = department.id
                         LEFT JOIN employee manager ON employee.manager_id = manager.id`;
 
-    connection.promise().query(sql, (err, rows) => {
+                        connection.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
         askSheska();
@@ -49,9 +51,9 @@ addEmployee = () => {
             const nameEmp = [answer.firstName, answer.lastName]
 
             // grab roles from roles table
-            const roleSql = `SELECT role.id, role.title FROM role`;
+            const roleSql = `SELECT role.id, role.title FROM roles`;
 
-            connection.promise().query(roleSql, (err, data) => {
+            connection.query(roleSql, (err, data) => {
                 if (err) throw err;
 
                 const rolesChoices = data.map(({ id, title }) => ({ name: title, value: id }));
@@ -68,9 +70,9 @@ addEmployee = () => {
                         const role = roleChoice.role;
                         nameEmp.push(role);
 
-                        const managerSql = `SELECT * FROM employee`;
+                        const managerSql = `SELECT * FROM employees`;
 
-                        connection.promise().query(managerSql, (err, data) => {
+                        connection.query(managerSql, (err, data) => {
                             if (err) throw err;
 
                             const managersChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
@@ -105,10 +107,10 @@ addEmployee = () => {
 
 // function to update an employee 
 updateEmployee = () => {
-    // get employees from employee table 
-    const employeeSql = `SELECT * FROM employee`;
+    // get employees FROM employees table 
+    const employeeSql = `SELECT * FROM employees`;
 
-    connection.promise().query(employeeSql, (err, data) => {
+    connection.query(employeeSql, (err, data) => {
         if (err) throw err;
 
         const employeesChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
@@ -126,9 +128,9 @@ updateEmployee = () => {
                 const roster = [];
                 roster.push(employee);
 
-                const roleSql = `SELECT * FROM role`;
+                const roleSql = `SELECT * FROM roles`;
 
-                connection.promise().query(roleSql, (err, data) => {
+                connection.query(roleSql, (err, data) => {
                     if (err) throw err;
 
                     const rolesChoices = data.map(({ id, title }) => ({ name: title, value: id }));
@@ -165,10 +167,10 @@ updateEmployee = () => {
 
 // function to update an employee 
 updateManager = () => {
-    // get employees from employee table 
-    const employeeSql = `SELECT * FROM employee`;
+    // get employees FROM employees table 
+    const employeeSql = `SELECT * FROM employees`;
 
-    connection.promise().query(employeeSql, (err, data) => {
+    connection.query(employeeSql, (err, data) => {
         if (err) throw err;
 
         const employeesChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
@@ -186,9 +188,9 @@ updateManager = () => {
                 const roster = [];
                 roster.push(employee);
 
-                const managerSql = `SELECT * FROM employee`;
+                const managerSql = `SELECT * FROM employees`;
 
-                connection.promise().query(managerSql, (err, data) => {
+                connection.query(managerSql, (err, data) => {
                     if (err) throw err;
 
                     const managersChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
@@ -229,11 +231,11 @@ employeeDepartment = () => {
     const sql = `SELECT employee.first_name, 
                         employee.last_name, 
                         department.name AS department
-                 FROM employee 
-                 LEFT JOIN role ON employee.role_id = role.id 
-                 LEFT JOIN department ON role.department_id = department.id`;
+                 FROM employees 
+                 LEFT JOIN roles ON employee.role_id = role.id 
+                 LEFT JOIN departments ON role.department_id = department.id`;
 
-    connection.promise().query(sql, (err, rows) => {
+    connection.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
         askSheska();
