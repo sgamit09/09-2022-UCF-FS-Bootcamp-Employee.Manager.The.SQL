@@ -1,0 +1,7 @@
+USE fma_statemilitary_db;
+
+INSERT INTO employees (firstName, lastName, role_id, manager_id)
+VALUES ('King','Bradley',1,NULL),('Roy','Mustang',2,1),('Maes','Hughes',3,1),('Alex','Armstrong',4,1),
+('Edward','Elric',4,1),('Riza','Hawkeye',5,2),('Maria','Ross',6,4),('Jean','Havoc',6,2),('Vato','Falman',7,2),
+('Kain','Fuery',8,2),('Pride','Bradley',9,NULL),('Lust','Spear',9,1),('Greed','Shield',9,1),('Gluttony','Stomach',9,1),
+('Wrath','Bradley',9,NULL),('Sloth','Digger',9,1),('Envy','Shape-Shifter',9,1);

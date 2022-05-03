@@ -1,12 +1,11 @@
+USE fma_statemilitary_db;
+
 INSERT INTO departments (name)
 VALUES ("Officers"),("Minor_Officers"),("Sins");
 
 INSERT INTO roles (title, salary, department_id)
-VALUES ('Fuhrer President','$1,000,000.00',1),('Colonel','$900,000.00',1),('Lieutenant Colonel','$800,000.00',1),
-('Major','$700,000.00',1),('First Lieutenant','$600,000.00',1),('Second Lieutenant','$500,000.00',1),
-('Warrant Officer','$400,000.00',2),('Master Sergeant','$300,000.00',2),('Homunculus','$0.00',3);
+VALUES ('Fuhrer President','10000.00',1),('Colonel','9000.00',1),('Lieutenant Colonel','8000.00',1),
+('Major','7000.00',1),('First Lieutenant','6000.00',1),('Second Lieutenant','5000.00',1),
+('Warrant Officer','4000.00',2),('Master Sergeant','3000.00',2),('Homunculus','0.00',3);
 
-INSERT INTO employees (firstName, lastName, role_id, manager_id)
-VALUES ('King','Bradley',1,NULL),('Roy','Mustang',2,1),('Maes','Hughes',3,1),('Alex','Armstrong',4,1),('Edward','Elric',4,1),
-('Riza','Hawkeye',5,2),('Maria','Ross',6,4),('Jean','Havoc',6,2),('Vato','Falman',7,2),('Kain','Fuery',8,2),('Pride','Bradley',9,NULL),
-('Lust','Spear',9,1),('Greed','Shield',9,1),('Gluttony','Stomach',9,1),('Wrath','Bradley',9,NULL),('Sloth','Digger',9,1),('Envy','Shape-Shifter',9,1),
+
