@@ -40,11 +40,12 @@ const askSheska = () => {
                 'Update an employee role',
                 'Update an employee manager',
                 "View employees by department",
+                "View employees by manager",
                 'Delete a department',
                 'Delete a role',
                 'Delete an employee',
                 'View department budgets',
-                'No Action']
+                'Quit']
         }
     ])
         .then((answers) => {
@@ -52,58 +53,85 @@ const askSheska = () => {
 
             if (choices === "View all departments") {
                 deptSQL.showDepartments();
+                askSheska();
             }
 
             if (choices === "View all roles") {
                 roleSQL.showRoles();
+                askSheska();
             }
 
             if (choices === "View all employees") {
                 employeeSQL.showEmployees();
+                askSheska();
             }
 
             if (choices === "Add a department") {
                 deptSQL.addDepartment();
+                askSheska();
             }
 
             if (choices === "Add a role") {
                 roleSQL.addRole();
+                askSheska();
             }
 
             if (choices === "Add an employee") {
                 employeeSQL.addEmployee();
+                askSheska();
             }
 
             if (choices === "Update an employee role") {
                 employeeSQL.updateEmployee();
+                askSheska();
             }
 
             if (choices === "Update an employee manager") {
                 employeeSQL.updateManager();
+                askSheska();
             }
 
             if (choices === "View employees by department") {
                 employeeSQL.employeeDepartment();
+                askSheska();
+            }
+
+            if (choices === "View employees by manager") {
+                employeeSQL.employeeManager();
+                askSheska();
             }
 
             if (choices === "Delete a department") {
                 deptSQL.deleteDepartment();
+                askSheska();
             }
 
             if (choices === "Delete a role") {
                 roleSQL.deleteRole();
+                askSheska();
             }
 
             if (choices === "Delete an employee") {
                 employeeSQL.deleteEmployee();
+                askSheska();
             }
 
             if (choices === "View department budgets") {
                 deptSQL.viewBudget();
+                askSheska();
             }
 
-            if (choices === "No Action") {
-                connection.end()
-            };
-        });
-}
+            if (choices === "Quit") {
+                console.log("\n" + "=".repeat(62) + "\n");
+                figlet('Come Back Soon!', function (err, data) {
+                    if (err) {
+                        console.log('Something went wrong...');
+                        console.dir(err);
+                        return;
+                    }
+                    console.log(data);
+                    return;
+                });
+            }
+        })
+    }

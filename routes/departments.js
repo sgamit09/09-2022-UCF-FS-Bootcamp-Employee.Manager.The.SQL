@@ -18,7 +18,6 @@ showDepartments = () => {
     connection.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
-        askSheska();
     });
 };
 
@@ -73,4 +72,22 @@ deleteDepartment = () => {
     });
 };
 
-module.exports = {showDepartments, addDepartment, deleteDepartment};
+// view department budget 
+viewBudget = () => {
+    console.log('Showing budget by department...\n');
+  
+    const sql = `SELECT department_id AS ID, 
+                        departments.name AS DEPARTMENT,
+                        SUM(salary) AS BUDGET
+                 FROM  roles  
+                 JOIN departments ON roles.department_id = departments.id GROUP BY department_id`;
+    
+    connection.query(sql, (err, rows) => {
+      if (err) throw err; 
+      console.table(rows);
+  
+      askSheska(); 
+    });            
+  };
+
+module.exports = {showDepartments, addDepartment, deleteDepartment, viewBudget};

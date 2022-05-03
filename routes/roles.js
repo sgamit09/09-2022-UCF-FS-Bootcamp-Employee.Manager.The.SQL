@@ -15,14 +15,12 @@ const connection = mysql.createConnection({
 showRoles = () => {
   console.log('Showing all roles...\n');
 
-  const sql = `SELECT role.id, role.title, department.name AS department
-               FROM roles
-               INNER JOIN departments ON role.department_id = department.id`;
+  const sql = `SELECT roles.id AS ROLE_ID, title AS ROLE_TITLE, salary AS SALARY, departments.name AS DEPARTMENT FROM roles
+               INNER JOIN departments ON roles.department_id = departments.id`;
   
   connection.query(sql, (err, rows) => {
     if (err) throw err; 
     console.table(rows); 
-    askSheska();
   })
 };
 

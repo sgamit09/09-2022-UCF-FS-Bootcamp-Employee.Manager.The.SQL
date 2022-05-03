@@ -14,22 +14,21 @@ const connection = mysql.createConnection({
 // function to show all employees 
 showEmployees = () => {
     console.log('Showing all employees...\n');
-    const sql = `SELECT employee.id, 
-                        employee.first_name, 
-                        employee.last_name, 
-                        role.title, 
-                        department.name AS department,
-                        role.salary, 
-                        CONCAT (manager.first_name, " ", manager.last_name) AS manager
+    const sql = `SELECT employees.id AS EMPLOYEE_ID, 
+                        employees.firstName AS FIRST_NAME, 
+                        employees.lastName AS LAST_NAME, 
+                        roles.title AS ROLE_TITLE, 
+                        departments.name AS DEPARTMENT,
+                        roles.salary AS SALARY, 
+                        CONCAT (manager.firstName, " ", manager.lastName) AS manager
                  FROM employees
-                        LEFT JOIN role ON employee.role_id = role.id
-                        LEFT JOIN department ON role.department_id = department.id
-                        LEFT JOIN employee manager ON employee.manager_id = manager.id`;
+                        LEFT JOIN roles ON employees.role_id = roles.id
+                        LEFT JOIN departments ON roles.department_id = departments.id
+                        LEFT JOIN employees manager ON employees.manager_id = manager.id`;
 
                         connection.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
-        askSheska();
     });
 };
 
@@ -51,7 +50,7 @@ addEmployee = () => {
             const nameEmp = [answer.firstName, answer.lastName]
 
             // grab roles from roles table
-            const roleSql = `SELECT role.id, role.title FROM roles`;
+            const roleSql = `SELECT roles.id, roles.title FROM roles`;
 
             connection.query(roleSql, (err, data) => {
                 if (err) throw err;
@@ -75,7 +74,7 @@ addEmployee = () => {
                         connection.query(managerSql, (err, data) => {
                             if (err) throw err;
 
-                            const managersChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+                            const managersChoices = data.map(({ id, firstName, lastName }) => ({ name: firstName + " " + lastName, value: id }));
 
                             inquirer.prompt([
                                 {
@@ -87,12 +86,12 @@ addEmployee = () => {
                             ])
                                 .then(managerChoice => {
                                     const manager = managerChoice.manager;
-                                    params.push(manager);
+                                    nameEmp.push(manager);
 
-                                    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                                    const sql = `INSERT INTO employees (firstName, lastName, role_id, manager_id)
                                                 VALUES (?, ?, ?, ?)`;
 
-                                    connection.query(sql, params, (err, result) => {
+                                    connection.query(sql, nameEmp, (err, result) => {
                                         if (err) throw err;
                                         console.log("Employee has been added!")
 
@@ -113,7 +112,7 @@ updateEmployee = () => {
     connection.query(employeeSql, (err, data) => {
         if (err) throw err;
 
-        const employeesChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+        const employeesChoices = data.map(({ id, firstName, lastName }) => ({ name: firstName + " " + lastName, value: id }));
 
         inquirer.prompt([
             {
@@ -145,13 +144,13 @@ updateEmployee = () => {
                     ])
                         .then(roleChoice => {
                             const role = roleChoice.role;
-                            params.push(role);
+                            roster.push(role);
 
                             let employee = roster[0]
                             roster[0] = role
                             roster[1] = employee
 
-                            const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+                            const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
 
                             connection.query(sql, roster, (err, result) => {
                                 if (err) throw err;
@@ -173,7 +172,7 @@ updateManager = () => {
     connection.query(employeeSql, (err, data) => {
         if (err) throw err;
 
-        const employeesChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+        const employeesChoices = data.map(({ id, firstName, lastName }) => ({ name: firstName + " " + lastName, value: id }));
 
         inquirer.prompt([
             {
@@ -193,7 +192,7 @@ updateManager = () => {
                 connection.query(managerSql, (err, data) => {
                     if (err) throw err;
 
-                    const managersChoices = data.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+                    const managersChoices = data.map(({ id, firstName, lastName }) => ({ name: firstName + " " + lastName, value: id }));
 
                     inquirer.prompt([
                         {
@@ -208,10 +207,10 @@ updateManager = () => {
                             roster.push(manager);
 
                             let employee = roster[0]
-                            roster[0] = role
+                            roster[0] = manager
                             roster[1] = employee
 
-                            const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`;
+                            const sql = `UPDATE employees SET manager_id = ? WHERE id = ?`;
 
                             connection.query(sql, roster, (err, result) => {
                                 if (err) throw err;
@@ -228,12 +227,12 @@ updateManager = () => {
 // function to view employee by department
 employeeDepartment = () => {
     console.log('Showing employee by departments...\n');
-    const sql = `SELECT employee.first_name, 
-                        employee.last_name, 
-                        department.name AS department
+    const sql = `SELECT employees.firstName, 
+                        employees.lastName, 
+                        departments.name AS department
                  FROM employees 
-                 LEFT JOIN roles ON employee.role_id = role.id 
-                 LEFT JOIN departments ON role.department_id = department.id`;
+                 LEFT JOIN roles ON employees.role_id = roles.id 
+                 LEFT JOIN departments ON roles.department_id = departments.id`;
 
     connection.query(sql, (err, rows) => {
         if (err) throw err;
@@ -242,4 +241,57 @@ employeeDepartment = () => {
     });
 };
 
-module.exports = { showEmployees, addEmployee, updateEmployee, updateManager, employeeDepartment};
+employeeManager = () => {
+    console.log('Showing employee by manager...\n');
+    const sql = `SELECT employees.id AS EMPLOYEE_ID, 
+                        employees.firstName AS FIRST_NAME, 
+                        employees.lastName AS LAST_NAME, 
+                        CONCAT (manager.firstName, " ", manager.lastName) AS manager
+                 FROM employees
+                        LEFT JOIN roles ON employees.role_id = roles.id
+                        LEFT JOIN employees manager ON employees.manager_id = manager.id`;
+
+    connection.query(sql, (err, rows) => {
+        if (err) throw err;
+        console.table(rows);
+        askSheska();
+    });
+};
+
+
+// function to delete employees
+deleteEmployee = () => {
+    // get employees from employee table 
+    const employeeSql = `SELECT * FROM employees`;
+  
+    connection.query(employeeSql, (err, data) => {
+      if (err) throw err; 
+  
+    const employees = data.map(({ id, firstName, lastName }) => ({ name: firstName + " "+ lastName, value: id }));
+  
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'name',
+          message: "Which employee would you like to delete?",
+          choices: employees
+        }
+      ])
+        .then(empChoice => {
+          const employee = empChoice.name;
+  
+          const sql = `DELETE FROM employees WHERE id = ?`;
+  
+          connection.query(sql, employee, (err, result) => {
+            if (err) throw err;
+            console.log("Successfully Deleted!");
+          
+            showEmployees();
+      });
+    });
+   });
+  };
+
+
+
+module.exports = { showEmployees, addEmployee, updateEmployee, updateManager, employeeDepartment, employeeManager, deleteEmployee};
