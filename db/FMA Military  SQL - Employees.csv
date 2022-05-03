@@ -1,12 +1,12 @@
 id,first_name,last_name,role_id,manager_id
 1,King,Bradley,1,null
-2,Roy ,Mustang,2,1
+2,Roy,Mustang,2,1
 3,Maes,Hughes,3,1
-4,Alex ,Armstrong,4,1
-5,Edward ,Elric,4,1
-6,Riza ,Hawkeye,5,2
-7,Maria ,Ross,6,4
-8,Jean ,Havoc,6,2
+4,Alex,Armstrong,4,1
+5,Edward,Elric,4,1
+6,Riza,Hawkeye,5,2
+7,Maria,Ross,6,4
+8,Jean,Havoc,6,2
 9,Vato,Falman,7,2
 10,Kain,Fuery,8,2
 11,Pride,Bradley,9,null

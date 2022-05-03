@@ -4,23 +4,28 @@ const inquirer = require('inquirer');
 const roleSQL = require('./routes/roles');
 const deptSQL = require('./routes/departments');
 const employeeSQL = require('./routes/employees');
-const ascii = require('ascii-art-font');
+const figlet = require('figlet');
+require('dotenv').config()
+console.log(process.env)
 
 // connection to database
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'SvgSQL0409!!',
-    database: 'FMA_StateMilitary_db'
-});
+const connection = mysql.createConnection(
+    'library_db',
+    'username = process.env.USERNAME_SQL',
+    'myPassword = process.env.PASSWORD_SQL',
+    {
+      host: 'localhost',
+      dialect: 'mysql',
+      port: "process.env.PORT"
+    });
 
 init = () => {
 
     console.log("\n"+"=".repeat(62)+"\n");
-    ascii.create('    Employee','Doom',(err, result) => {
+    figlet.create('    Employee','Doom',(err, result) => {
         if (err) throw err;
         console.log(result);
-        ascii.create('      Manager','Doom',(err, result) => {
+        figlet.create('      Manager','Doom',(err, result) => {
             if (err) throw err;
             console.log(result);
             console.log("\n"+"=".repeat(62)+"\n");
