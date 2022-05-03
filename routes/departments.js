@@ -1,6 +1,8 @@
 showDepartments = () => {
     console.log('Showing all departments...\n');
-    const sql = `SELECT department.id AS id, department.name AS department FROM department`;
+    const sql = `SELECT department.id AS id, 
+                 department.name AS department 
+                 FROM department`;
 
     connection.promise().query(sql, (err, rows) => {
         if (err) throw err;
@@ -36,14 +38,14 @@ deleteDepartment = () => {
     connection.promise().query(deptSql, (err, data) => {
         if (err) throw err;
 
-        const dept = data.map(({ name, id }) => ({ name: name, value: id }));
+        const deptChoices = data.map(({ name, id }) => ({ name: name, value: id }));
 
         inquirer.prompt([
             {
                 type: 'list',
                 name: 'dept',
                 message: "What department do you want to delete?",
-                choices: dept
+                choices: deptChoices
             }
         ])
             .then(answer => {

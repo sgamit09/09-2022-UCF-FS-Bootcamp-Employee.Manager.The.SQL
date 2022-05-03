@@ -1,9 +1,9 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 // const cTable = require('console.table');
-const roleSQL = require('./queries/roles');
-const deptSQL = require('./queries/departments');
-const employeeSQL = require('./queries/employees');
+const roleSQL = require('./routes/roles');
+const deptSQL = require('./routes/departments');
+const employeeSQL = require('./routes/employees');
 const ascii = require('ascii-art-font');
 
 // connection to database
