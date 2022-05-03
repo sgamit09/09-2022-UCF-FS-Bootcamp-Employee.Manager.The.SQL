@@ -1,0 +1,10 @@
+id,Title,Salary,department_id
+1,Fuhrer President,"$1,000,000.00",1
+2,Colonel,"$900,000.00",1
+3,Lieutenant Colonel,"$800,000.00",1
+4,Major,"$700,000.00",1
+5,First Lieutenant,"$600,000.00",1
+6,Second Lieutenant,"$500,000.00",1
+7,Warrant Officer,"$400,000.00",2
+8,Master Sergeant,"$300,000.00",2
+9,Homunculus,$0.00,3
