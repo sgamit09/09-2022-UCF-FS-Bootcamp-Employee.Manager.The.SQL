@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+// const mysql = require('mysql2');
 const inquirer = require('inquirer');
 // const cTable = require('console.table');
 const roleSQL = require('./routes/roles');
@@ -6,22 +6,18 @@ const deptSQL = require('./routes/departments');
 const employeeSQL = require('./routes/employees');
 const figlet = require('figlet');
 require('dotenv').config()
-console.log(process.env)
+// console.log(process.env)
 
-// connection to database
-const connection = mysql.createConnection(
-    'library_db',
-    'username = process.env.USERNAME_SQL',
-    'myPassword = process.env.PASSWORD_SQL',
-    {
-      host: 'localhost',
-      dialect: 'mysql',
-      port: "process.env.PORT"
-    });
+// // connection to database
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: process.env.PASSWORD_SQL,
+//     database: 'fma_statemilitary_db'
+//   });
 
 init = () => {
-
-    console.log("\n"+"=".repeat(62)+"\n");
+   console.log("\n"+"=".repeat(62)+"\n");
     figlet.create('    Employee','Doom',(err, result) => {
         if (err) throw err;
         console.log(result);

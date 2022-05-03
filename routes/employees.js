@@ -1,3 +1,14 @@
+const mysql = require('mysql');
+const inquirer = require('inquirer');
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    port: process.env.PORT,
+    user: process.env.USERNAME_SQL,
+    password: process.env.PASSWORD_SQL,
+    database: 'fma_statemilitary_db'
+  });
+
 // function to show all employees 
 showEmployees = () => {
     console.log('Showing all employees...\n');
