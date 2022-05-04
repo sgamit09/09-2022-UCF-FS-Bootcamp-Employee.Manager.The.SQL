@@ -1,5 +1,8 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const roleSQL = require('./roles');
+const deptSQL = require('./departments');
+const figlet = require('figlet');
 require('dotenv').config()
 
 const PORT = process.env.PORT || 3001;
@@ -29,6 +32,8 @@ showEmployees = () => {
                         connection.query(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
+        askMeAgain();
+
     });
 };
 
@@ -258,7 +263,6 @@ employeeManager = () => {
     });
 };
 
-
 // function to delete employees
 deleteEmployee = () => {
     // get employees from employee table 
@@ -292,6 +296,87 @@ deleteEmployee = () => {
    });
   };
 
+  const askMeAgain = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'choices',
+            message: 'What would you like to do?',
+            choices: ['View all departments',
+                'View all roles',
+                'View all employees',
+                'Add a department',
+                'Add a role',
+                'Add an employee',
+                'Update an employee role',
+                'Update an employee manager',
+                "View employees by department",
+                "View employees by manager",
+                'Delete a department',
+                'Delete a role',
+                'Delete an employee',
+                'View department budgets',
+                'Quit']
+        },
+    ])
+        .then((answers) => {
+            const { choices } = answers;
+                    if (choices === "View all departments") {
+                        deptSQL.showDepartments();
+                    }
+                    if (choices === "View all roles") {
+                        roleSQL.showRoles();
+                    }
+                    if (choices === "View all employees") {
+                        showEmployees();
+                    }
+                    if (choices === "Add a department") {
+                        deptSQL.addDepartment();
+                    }
+                    if (choices === "Add a role") {
+                        roleSQL.addRole();
+                    }
+                    if (choices === "Add an employee") {
+                        addEmployee();
+                    }
+                    if (choices === "Update an employee role") {
+                        updateEmployee();
+                    }
+                    if (choices === "Update an employee manager") {
+                        updateManager();
+                    }
+                    if (choices === "View employees by department") {
+                        employeeDepartment();
+                    }
+                    if (choices === "View employees by manager") {
+                        employeeManager();
+                    }
+                    if (choices === "Delete a department") {
+                        deptSQL.deleteDepartment();
+                    }
+                    if (choices === "Delete a role") {
+                        roleSQL.deleteRole();
+                    }
+                    if (choices === "Delete an employee") {
+                        deleteEmployee();
+                    }
+                    if (choices === "View department budgets") {
+                        deptSQL.viewBudget();
+                    }
+                    if (choices === "Quit") {
+                        console.log("\n" + "=".repeat(62) + "\n");
+                        figlet('Come Back Soon!', function (err, data) {
+                            if (err) {
+                                console.log('Something went wrong...');
+                                console.dir(err);
+                                return;
+                         }
+                         console.log(data);
+                            return;
+                         });
+                    }
+            }) 
+}
 
 
 module.exports = { showEmployees, addEmployee, updateEmployee, updateManager, employeeDepartment, employeeManager, deleteEmployee};
