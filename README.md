@@ -71,7 +71,7 @@ Thanks again!
 # Contributors ⚔️
 
 * Scar 👍
-* Ling 🦸🏻‍♂️
+* Ling/Greed 🦸🏻‍♂️
 * Doctor Marco 💀
 * The Animal Chimeras 🐙
 * Nina...🙃
