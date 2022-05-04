@@ -1,8 +1,5 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const roleSQL = require('./roles');
-const deptSQL = require('./departments');
-const figlet = require('figlet');
 require('dotenv').config()
 
 const PORT = process.env.PORT || 3001;
@@ -12,7 +9,7 @@ const connection = mysql.createConnection({
     user: process.env.USERNAME_SQL,
     password: process.env.PASSWORD_SQL,
     database: 'fma_statemilitary_db'
-  });
+});
 
 // function to show all employees 
 showEmployees = () => {
@@ -29,11 +26,12 @@ showEmployees = () => {
                         LEFT JOIN departments ON roles.department_id = departments.id
                         LEFT JOIN employees manager ON employees.manager_id = manager.id`;
 
-                        connection.query(sql, (err, rows) => {
+    connection.query(sql, (err, rows) => {
         if (err) throw err;
+        console.log("\n");
         console.table(rows);
-        askMeAgain();
-
+        console.log("\n");
+        askSheska();
     });
 };
 
@@ -96,11 +94,13 @@ addEmployee = () => {
                                     const sql = `INSERT INTO employees (firstName, lastName, role_id, manager_id)
                                                 VALUES (?, ?, ?, ?)`;
 
-                                    connection.query(sql, nameEmp, (err, result) => {
+                                    connection.query(sql, nameEmp, (err, rows) => {
                                         if (err) throw err;
                                         console.log("Employee has been added!")
-
+                                        console.log("\n");
                                         showEmployees();
+                                        console.log("\n");
+                                        askSheska();
                                     });
                                 });
                         });
@@ -157,11 +157,13 @@ updateEmployee = () => {
 
                             const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
 
-                            connection.query(sql, roster, (err, result) => {
+                            connection.query(sql, roster, (err, rows) => {
                                 if (err) throw err;
                                 console.log("Employee has been updated!");
-
+                                console.log("\n");
                                 showEmployees();
+                                console.log("\n");
+                                askSheska();
                             });
                         });
                 });
@@ -217,11 +219,13 @@ updateManager = () => {
 
                             const sql = `UPDATE employees SET manager_id = ? WHERE id = ?`;
 
-                            connection.query(sql, roster, (err, result) => {
+                            connection.query(sql, roster, (err, rows) => {
                                 if (err) throw err;
                                 console.log("Employee has been updated!");
-
-                                showEmployees();
+                                console.log("\n");
+                                console.table(rows);
+                                console.log("\n");
+                                askSheska();
                             });
                         });
                 });
@@ -241,7 +245,9 @@ employeeDepartment = () => {
 
     connection.query(sql, (err, rows) => {
         if (err) throw err;
+        console.log("\n");
         console.table(rows);
+        console.log("\n");
         askSheska();
     });
 };
@@ -258,7 +264,9 @@ employeeManager = () => {
 
     connection.query(sql, (err, rows) => {
         if (err) throw err;
+        console.log("\n");
         console.table(rows);
+        console.log("\n");
         askSheska();
     });
 };
@@ -267,116 +275,35 @@ employeeManager = () => {
 deleteEmployee = () => {
     // get employees from employee table 
     const employeeSql = `SELECT * FROM employees`;
-  
+
     connection.query(employeeSql, (err, data) => {
-      if (err) throw err; 
-  
-    const employees = data.map(({ id, firstName, lastName }) => ({ name: firstName + " "+ lastName, value: id }));
-  
-      inquirer.prompt([
-        {
-          type: 'list',
-          name: 'name',
-          message: "Which employee would you like to delete?",
-          choices: employees
-        }
-      ])
-        .then(empChoice => {
-          const employee = empChoice.name;
-  
-          const sql = `DELETE FROM employees WHERE id = ?`;
-  
-          connection.query(sql, employee, (err, result) => {
-            if (err) throw err;
-            console.log("Successfully Deleted!");
-          
-            showEmployees();
-      });
+        if (err) throw err;
+
+        const employees = data.map(({ id, firstName, lastName }) => ({ name: firstName + " " + lastName, value: id }));
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'name',
+                message: "Which employee would you like to delete?",
+                choices: employees
+            }
+        ])
+            .then(empChoice => {
+                const employee = empChoice.name;
+
+                const sql = `DELETE FROM employees WHERE id = ?`;
+
+                connection.query(sql, employee, (err, rows) => {
+                    if (err) throw err;
+                    console.log("Successfully Deleted!");
+                    console.log("\n");
+                    showEmployees();
+                    console.log("\n");
+                    askSheska();
+                });
+            });
     });
-   });
-  };
+};
 
-  const askMeAgain = () => {
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'choices',
-            message: 'What would you like to do?',
-            choices: ['View all departments',
-                'View all roles',
-                'View all employees',
-                'Add a department',
-                'Add a role',
-                'Add an employee',
-                'Update an employee role',
-                'Update an employee manager',
-                "View employees by department",
-                "View employees by manager",
-                'Delete a department',
-                'Delete a role',
-                'Delete an employee',
-                'View department budgets',
-                'Quit']
-        },
-    ])
-        .then((answers) => {
-            const { choices } = answers;
-                    if (choices === "View all departments") {
-                        deptSQL.showDepartments();
-                    }
-                    if (choices === "View all roles") {
-                        roleSQL.showRoles();
-                    }
-                    if (choices === "View all employees") {
-                        showEmployees();
-                    }
-                    if (choices === "Add a department") {
-                        deptSQL.addDepartment();
-                    }
-                    if (choices === "Add a role") {
-                        roleSQL.addRole();
-                    }
-                    if (choices === "Add an employee") {
-                        addEmployee();
-                    }
-                    if (choices === "Update an employee role") {
-                        updateEmployee();
-                    }
-                    if (choices === "Update an employee manager") {
-                        updateManager();
-                    }
-                    if (choices === "View employees by department") {
-                        employeeDepartment();
-                    }
-                    if (choices === "View employees by manager") {
-                        employeeManager();
-                    }
-                    if (choices === "Delete a department") {
-                        deptSQL.deleteDepartment();
-                    }
-                    if (choices === "Delete a role") {
-                        roleSQL.deleteRole();
-                    }
-                    if (choices === "Delete an employee") {
-                        deleteEmployee();
-                    }
-                    if (choices === "View department budgets") {
-                        deptSQL.viewBudget();
-                    }
-                    if (choices === "Quit") {
-                        console.log("\n" + "=".repeat(62) + "\n");
-                        figlet('Come Back Soon!', function (err, data) {
-                            if (err) {
-                                console.log('Something went wrong...');
-                                console.dir(err);
-                                return;
-                         }
-                         console.log(data);
-                            return;
-                         });
-                    }
-            }) 
-}
-
-
-module.exports = { showEmployees, addEmployee, updateEmployee, updateManager, employeeDepartment, employeeManager, deleteEmployee};
+module.exports = { showEmployees, addEmployee, updateEmployee, updateManager, employeeDepartment, employeeManager, deleteEmployee };
